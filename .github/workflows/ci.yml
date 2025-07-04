@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+name: Continuous Integration Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  preset-test:
+    uses: ./.github/workflows/reusable-test.yml
+    with:
+      matrix_config: >
+        [
+          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":{"preset":"gcc-debug"}},
+          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":{"preset":"gcc-release"}},
+          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":"Default"},
+          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":"TSan"},
+          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":"MaxSan"},
+          {"compiler":"gcc","version":"15","cxxversion":"c++20","test":"Default"},
+          {"compiler":"gcc","version":"15","cxxversion":"c++17","test":"Default"},
+          {"compiler":"gcc","version":"14","cxxversion":"c++23","test":"Default"},
+          {"compiler":"gcc","version":"14","cxxversion":"c++20","test":"Default"},
+          {"compiler":"gcc","version":"14","cxxversion":"c++17","test":"Default"},
+          {"compiler":"clang","version":"20","cxxversion":"c++23","test":{"preset":"llvm-debug"}},
+          {"compiler":"clang","version":"20","cxxversion":"c++23","test":{"preset":"llvm-release"}},
+          {"compiler":"clang","version":"20","cxxversion":"c++23","test":"Default"},
+          {"compiler":"clang","version":"20","cxxversion":"c++23","test":"TSan"},
+          {"compiler":"clang","version":"20","cxxversion":"c++23","test":"MaxSan"},
+          {"compiler":"clang","version":"20","cxxversion":"c++20","test":"Default"},
+          {"compiler":"clang","version":"20","cxxversion":"c++17","test":"Default"},
+          {"compiler":"clang","version":"19","cxxversion":"c++23","test":"Default"},
+          {"compiler":"clang","version":"19","cxxversion":"c++20","test":"Default"},
+          {"compiler":"clang","version":"19","cxxversion":"c++17","test":"Default"}
+        ]
