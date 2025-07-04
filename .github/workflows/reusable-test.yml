@@ -9,14 +9,24 @@ on:
         type: string
         required: true
 jobs:
-  preset_test_matrix:
+  test_matrix_prep:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: set-matrix
+        run: |
+          matrix=$(echo '${{ inputs.matrix_config }}' | ./transform.py)
+          echo "matrix=$(echo $matrix)" >> $GITHUB_OUTPUT
+  test_matrix:
+    needs: test_matrix_prep
     strategy:
       fail-fast: false
       matrix:
-        config: ${{ fromJSON(inputs.matrix_config) }}
-    name: "${{ matrix.config.compiler }} ${{ matrix.config.version }} ${{ matrix.config.cxxversion }} ${{ toJSON(matrix.config.test) }}"
+        config: ${{ fromJson(needs.test_matrix_prep.outputs.matrix) }}
+    name: "${{ matrix.config.compiler }} ${{ matrix.config.version }} ${{ matrix.config.cxxversion }} ${{ matrix.config.stdlib }} ${{ matrix.config.test }}"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name:
-        run: ./foo.sh ${{ matrix.config.test }}
+      - run: ./foo.sh ${{ matrix.config.compiler }} ${{ matrix.config.version }} ${{ matrix.config.cxxversion }} ${{ matrix.config.stdlib }} ${{ matrix.config.test }}

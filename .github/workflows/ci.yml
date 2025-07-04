@@ -14,25 +14,81 @@ jobs:
     uses: ./.github/workflows/reusable-test.yml
     with:
       matrix_config: >
-        [
-          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":{"preset":"gcc-debug"}},
-          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":{"preset":"gcc-release"}},
-          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":"Default"},
-          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":"TSan"},
-          {"compiler":"gcc","version":"15","cxxversion":"c++23","test":"MaxSan"},
-          {"compiler":"gcc","version":"15","cxxversion":"c++20","test":"Default"},
-          {"compiler":"gcc","version":"15","cxxversion":"c++17","test":"Default"},
-          {"compiler":"gcc","version":"14","cxxversion":"c++23","test":"Default"},
-          {"compiler":"gcc","version":"14","cxxversion":"c++20","test":"Default"},
-          {"compiler":"gcc","version":"14","cxxversion":"c++17","test":"Default"},
-          {"compiler":"clang","version":"20","cxxversion":"c++23","test":{"preset":"llvm-debug"}},
-          {"compiler":"clang","version":"20","cxxversion":"c++23","test":{"preset":"llvm-release"}},
-          {"compiler":"clang","version":"20","cxxversion":"c++23","test":"Default"},
-          {"compiler":"clang","version":"20","cxxversion":"c++23","test":"TSan"},
-          {"compiler":"clang","version":"20","cxxversion":"c++23","test":"MaxSan"},
-          {"compiler":"clang","version":"20","cxxversion":"c++20","test":"Default"},
-          {"compiler":"clang","version":"20","cxxversion":"c++17","test":"Default"},
-          {"compiler":"clang","version":"19","cxxversion":"c++23","test":"Default"},
-          {"compiler":"clang","version":"19","cxxversion":"c++20","test":"Default"},
-          {"compiler":"clang","version":"19","cxxversion":"c++17","test":"Default"}
-        ]
+        {
+          "gcc": [
+            { "versions": ["15"],
+              "tests": [
+                { "cxxversions": ["c++26"],
+                  "tests": [
+                    { "stdlibs": ["libstdc++"],
+                      "tests": ["Default", "TSan", "MaxSan", "Werror", "Dynamic"]
+                    }
+                  ]
+                },
+                { "cxxversions": ["c++23", "c++20", "c++17"],
+                  "tests": [{"stdlibs": ["libstdc++"], "tests": ["Default"]}]
+                }
+              ]
+            },
+            { "versions": ["14", "13"],
+              "tests": [
+                { "cxxversions": ["c++26", "c++23", "c++20", "c++17"],
+                  "tests": [{"stdlibs": ["libstdc++"], "tests": ["Default"]}]
+                }
+              ]
+            },
+            {
+              "versions": ["12", "11"],
+              "tests": [
+                { "cxxversions": ["c++23", "c++20", "c++17"],
+                  "tests": [{"stdlibs": ["libstdc++"], "tests": ["Default"]}]
+                }
+              ]
+            }
+          ],
+          "clang": [
+            { "versions": ["20"],
+              "tests": [
+                {"cxxversions": ["c++26"],
+                  "tests": [
+                    {
+                      "stdlibs": ["libstdc++", "libc++"],
+                      "tests": ["Default", "TSan", "MaxSan", "Werror", "Dynamic"]
+                    }
+                  ]
+                },
+                {
+                  "cxxversions": ["c++23", "c++20", "c++17"],
+                  "tests": [{"stdlibs": ["libstdc++", "libc++"], "tests": ["Default"]}]
+                }
+              ]
+            },
+            { "versions": ["19", "18", "17"],
+              "tests": [
+                { "cxxversions": ["c++26", "c++23", "c++20", "c++17"],
+                  "tests": [{"stdlibs": ["libstdc++", "libc++"], "tests": ["Default"]}]
+                }
+              ]
+            }
+          ],
+          "appleclang": [
+            { "versions": ["latest"],
+              "tests": [
+                {
+                  "cxxversions": ["c++26", "c++23", "c++20", "c++17"],
+                  "tests": [{"stdlibs": ["libc++"], "tests": ["Default"]}]
+                }
+              ]
+            }
+          ],
+          "msvc": [
+            { "versions": ["latest"],
+              "tests": [
+                {
+                  "cxxversions": ["c++latest"],
+                  "tests": [{"stdlibs": ["stl"], "tests": ["Default", "MaxSan"]}]
+                }
+              ]
+            }
+          ]
+        }
